@@ -1,0 +1,291 @@
+/* Custom styles to enhance Tailwind CSS */
+
+/* Global styles and variables */
+:root {
+  --primary-red: #dc2626;
+  --primary-red-dark: #b91c1c;
+  --primary-red-light: #ef4444;
+  --secondary-blue: #1e40af;
+  --text-dark: #1f2937;
+  --text-light: #f9fafb;
+  --background-light: #f3f4f6;
+  --background-dark: #111827;
+}
+
+/* Enhance the base styling */
+body {
+  @apply antialiased text-gray-800;
+  background-color: var(--background-light);
+}
+
+/* Custom animations */
+@keyframes pulse-red {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-red {
+  animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Blood drop icon animations */
+.blood-drop {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+}
+
+.blood-drop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%) rotate(45deg);
+  background-color: var(--primary-red);
+  border-radius: 0 50% 50% 50%;
+  animation: pulse-red 2s infinite;
+}
+
+/* Enhance buttons beyond Tailwind defaults */
+.btn-primary {
+  @apply px-4 py-2 bg-red-600 text-white rounded-md shadow-md transition duration-300;
+}
+
+.btn-primary:hover {
+  @apply bg-red-700 shadow-lg transform -translate-y-1;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-blue-700 text-white rounded-md shadow-md transition duration-300;
+}
+
+.btn-secondary:hover {
+  @apply bg-blue-800 shadow-lg transform -translate-y-1;
+}
+
+.btn-outline {
+  @apply px-4 py-2 border border-red-600 text-red-600 rounded-md shadow-sm transition duration-300;
+}
+
+.btn-outline:hover {
+  @apply bg-red-50 border-red-700 text-red-700;
+}
+
+/* Card enhancements */
+.card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 transition duration-300;
+}
+
+.card:hover {
+  @apply shadow-lg border-red-100;
+}
+
+.card-header {
+  @apply px-6 py-4 bg-red-50 border-b border-red-100;
+}
+
+.card-body {
+  @apply p-6;
+}
+
+.card-footer {
+  @apply px-6 py-4 bg-gray-50 border-t border-gray-100;
+}
+
+/* Form enhancements */
+.input-field {
+  @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm;
+}
+
+.input-field:focus {
+  @apply outline-none ring-2 ring-red-500 border-red-500;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+/* Blood type badges */
+.blood-type-badge {
+  @apply inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold;
+}
+
+.blood-type-a {
+  @apply bg-red-100 text-red-800;
+}
+
+.blood-type-b {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.blood-type-ab {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.blood-type-o {
+  @apply bg-green-100 text-green-800;
+}
+
+/* Dashboard stats */
+.stat-card {
+  @apply bg-white rounded-xl shadow-md p-6 border-l-4;
+}
+
+.stat-card-primary {
+  @apply border-red-500;
+}
+
+.stat-card-secondary {
+  @apply border-blue-500;
+}
+
+.stat-card-success {
+  @apply border-green-500;
+}
+
+.stat-card-warning {
+  @apply border-yellow-500;
+}
+
+/* Page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+/* Blood inventory levels visualization */
+.inventory-level {
+  @apply h-24 rounded-md relative overflow-hidden;
+}
+
+.inventory-level-inner {
+  @apply absolute bottom-0 left-0 right-0 bg-red-500 transition-all duration-500;
+}
+
+.inventory-level-label {
+  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-lg;
+}
+
+/* Donor and recipient profile cards */
+.profile-card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 transition duration-300;
+}
+
+.profile-card:hover {
+  @apply shadow-lg transform -translate-y-1;
+}
+
+.profile-header {
+  @apply relative h-32 bg-gradient-to-r from-red-500 to-red-600;
+}
+
+.profile-avatar {
+  @apply absolute -bottom-16 left-1/2 transform -translate-x-1/2 h-32 w-32 rounded-full border-4 border-white bg-white;
+}
+
+.profile-content {
+  @apply pt-20 pb-6 px-6;
+}
+
+/* Utility classes for blood-themed elements */
+.text-blood {
+  color: var(--primary-red);
+}
+
+.bg-blood {
+  background-color: var(--primary-red);
+}
+
+.border-blood {
+  border-color: var(--primary-red);
+}
+
+/* Appointment calendar enhancements */
+.calendar-day {
+  @apply h-24 p-2 border border-gray-200 relative;
+}
+
+.calendar-day-current {
+  @apply bg-red-50;
+}
+
+.calendar-event {
+  @apply text-xs p-1 rounded mb-1 truncate;
+}
+
+.calendar-event-donation {
+  @apply bg-red-100 text-red-800 border-l-2 border-red-500;
+}
+
+.calendar-event-request {
+  @apply bg-blue-100 text-blue-800 border-l-2 border-blue-500;
+}
+
+/* Dark mode overrides */
+.theme-dark {
+  @apply bg-gray-900 text-gray-100;
+}
+
+.theme-dark .card {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.theme-dark .card-header {
+  @apply bg-gray-700 border-gray-600;
+}
+
+.theme-dark .card-footer {
+  @apply bg-gray-700 border-gray-600;
+}
+
+.theme-dark .input-field {
+  @apply bg-gray-700 border-gray-600 text-white;
+}
+
+.theme-dark .input-field:focus {
+  @apply ring-red-400 border-red-400;
+}
+
+.theme-dark .form-label {
+  @apply text-gray-300;
+}
+
+.theme-dark .stat-card {
+  @apply bg-gray-800;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .blood-drop {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .blood-drop::before {
+    width: 14px;
+    height: 14px;
+  }
+} 

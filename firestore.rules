@@ -1,0 +1,53 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // For development only - Allow public access to all collections
+    // TODO: Replace with more restrictive rules for production
+    match /{document=**} {
+      allow read, write: if true;
+    }
+    
+    /* Commented out for development - Uncomment for production
+    // Default deny all rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Allow public access to donors collection
+    match /donors/{donorId} {
+      // Allow reading by anyone
+      allow read: if true;
+      
+      // Allow creation with validation
+      allow create: if request.resource.data.keys().hasAll(['fullName', 'email', 'phone', 'age', 'gender', 'bloodType', 'medicalConditions', 'medications']) &&
+                      request.resource.data.age is number &&
+                      request.resource.data.medicalConditions is bool &&
+                      request.resource.data.medications is bool;
+      
+      // Allow updates by the donor themselves or admins
+      allow update: if (request.auth != null && 
+                        (request.resource.data.userId == request.auth.uid || 
+                         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"));
+      
+      // Allow deletion by admins only
+      allow delete: if request.auth != null &&
+                      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+    
+    // Allow access to donation history
+    match /donationHistory/{recordId} {
+      // Anyone can read donation history
+      allow read: if true;
+      
+      // Only authenticated users can create donation records
+      allow create: if request.auth != null &&
+                      request.resource.data.keys().hasAll(['donorId', 'donationDate', 'bloodAmount', 'location']);
+      
+      // Only admins can update or delete donation records
+      allow update, delete: if request.auth != null &&
+                              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+    */
+  }
+}

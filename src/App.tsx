@@ -1,26 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './index.css'; // Import the main CSS file that imports all styles
 
-function App() {
+// Contexts
+import { AuthProvider } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+
+// Components
+import Notifications from './components/common/Notifications';
+
+// Router
+import AppRouter from './router/AppRouter';
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider>
+      <AuthProvider>
+        <NotificationProvider>
+          <AppRouter />
+          <Notifications />
+        </NotificationProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
