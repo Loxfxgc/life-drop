@@ -14,10 +14,10 @@ const AuthLayout: React.FC = () => {
           <div className="flex justify-center">
             <img
               className="h-12 w-auto"
-              src="/assets/images/logo.png"
-              alt="Blood Bank"
+              src="/assets/images/lifedrop-logo.png"
+              alt="LifeDrop"
             />
-            <span className="ml-2 text-2xl font-bold text-red-600">Blood Bank</span>
+            <span className="ml-2 text-2xl font-bold text-red-600">LifeDrop</span>
           </div>
         </Link>
       </div>

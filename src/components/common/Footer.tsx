@@ -13,10 +13,10 @@ const Footer: React.FC = () => {
             <div className="flex items-center">
               <img
                 className="h-10 w-auto"
-                src="/assets/images/logo.png"
-                alt="Blood Bank"
+                src="/assets/images/lifedrop-logo.png"
+                alt="LifeDrop"
               />
-              <span className="ml-2 text-xl font-bold text-white">Blood Bank</span>
+              <span className="ml-2 text-xl font-bold text-white">LifeDrop</span>
             </div>
             <p className="mt-4 text-sm text-gray-300">
               Connecting donors with recipients to save lives. Every drop counts.
@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
         
         <div className="mt-12 border-t border-gray-700 pt-8">
           <p className="text-base text-gray-400 text-center">
-            &copy; {currentYear} Blood Bank. All rights reserved.
+            &copy; {currentYear} LifeDrop. All rights reserved.
           </p>
         </div>
       </div>

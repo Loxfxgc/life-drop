@@ -48,7 +48,7 @@ const Header: React.FC = () => {
             <Link to={ROUTES.HOME} className="flex-shrink-0 flex items-center">
               <img
                 className="h-10 w-auto"
-                src="/assets/images/logo.png"
+                src="/assets/images/lifedrop-logo.png"
                 alt="LifeDrop Logo"
               />
               <span className="ml-2 text-xl font-bold text-red-600">LifeDrop</span>
