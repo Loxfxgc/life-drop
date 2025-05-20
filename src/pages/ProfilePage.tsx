@@ -6,6 +6,8 @@ import Card from '../components/common/Card';
 import { userService } from '../api/userService';
 import { donorService, DonationHistory } from '../api/donorService';
 import { inventoryService, BloodRequest } from '../api/inventoryService';
+import DonationAlerts from '../components/donor/DonationAlerts';
+import RequestStatusAlerts from '../components/recipient/RequestStatusAlerts';
 
 interface UserProfile {
   id: string;
@@ -40,7 +42,7 @@ const ProfilePage: React.FC = () => {
   const [isLoadingRequests, setIsLoadingRequests] = useState(true);
   
   // Active tab state
-  const [activeTab, setActiveTab] = useState<'profile' | 'donations' | 'requests'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'donations' | 'requests' | 'donation-alerts' | 'request-alerts'>('profile');
   
   // Fetch user profile data
   useEffect(() => {
@@ -241,11 +243,12 @@ const ProfilePage: React.FC = () => {
       </section>
       
       {/* Tabs navigation */}
-      <div className="bg-white border-b">
+      <div className="border-b border-gray-200">
         <div className="container mx-auto px-4">
-          <nav className="flex -mb-px">
+          <nav className="-mb-px flex space-x-8 overflow-x-auto">
             <button
-              className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm 
+              ${
                 activeTab === 'profile'
                   ? 'border-purple-500 text-purple-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -254,25 +257,53 @@ const ProfilePage: React.FC = () => {
             >
               Profile
             </button>
+            
             <button
-              className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm 
+              ${
                 activeTab === 'donations'
                   ? 'border-purple-500 text-purple-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
               onClick={() => setActiveTab('donations')}
             >
-              Donation History
+              Donations
             </button>
+            
             <button
-              className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm 
+              ${
                 activeTab === 'requests'
                   ? 'border-purple-500 text-purple-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
               onClick={() => setActiveTab('requests')}
             >
-              Request History
+              Requests
+            </button>
+            
+            <button
+              className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm 
+              ${
+                activeTab === 'donation-alerts'
+                  ? 'border-purple-500 text-purple-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+              onClick={() => setActiveTab('donation-alerts')}
+            >
+              Donation Alerts
+            </button>
+
+            <button
+              className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm 
+              ${
+                activeTab === 'request-alerts'
+                  ? 'border-purple-500 text-purple-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+              onClick={() => setActiveTab('request-alerts')}
+            >
+              Request Alerts
             </button>
           </nav>
         </div>
@@ -281,6 +312,26 @@ const ProfilePage: React.FC = () => {
       {/* Main content */}
       <section className="py-8">
         <div className="container mx-auto px-4">
+          {/* Donation Alerts Tab */}
+          {activeTab === 'donation-alerts' && (
+            <Card title="Donation Alerts">
+              <p className="mb-4 text-gray-600">
+                Stay updated on the status of your blood donations. Hospitals will notify you when your donation is received, processed, and used.
+              </p>
+              <DonationAlerts className="mt-4" />
+            </Card>
+          )}
+
+          {/* Request Status Alerts Tab */}
+          {activeTab === 'request-alerts' && (
+            <Card title="Blood Request Status">
+              <p className="mb-4 text-gray-600">
+                Track the status of your blood requests. Hospitals will update you when your request is approved, rejected, or fulfilled.
+              </p>
+              <RequestStatusAlerts className="mt-4" />
+            </Card>
+          )}
+          
           {/* Profile Information Tab */}
           {activeTab === 'profile' && (
             <Card title={isEditing ? 'Edit Profile' : 'Profile Information'}>

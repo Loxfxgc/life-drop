@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeDrop - User Role Updater</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #e53e3e;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #e53e3e;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #c53030;
+    }
+    .log {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f8f8f8;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      font-family: monospace;
+      height: 150px;
+      overflow-y: auto;
+    }
+    .log p {
+      margin: 5px 0;
+    }
+    .log p.error {
+      color: #e53e3e;
+    }
+    .log p.success {
+      color: #38a169;
+    }
+    .predefined-section {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f0f4ff;
+      border-radius: 4px;
+    }
+    .predefined-section h2 {
+      margin-top: 0;
+      font-size: 1.2em;
+      color: #4a5568;
+    }
+    .card {
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    .auth-status {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #f0f4ff;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .auth-status .user-email {
+      margin-left: 10px;
+      font-weight: 500;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active {
+      border-bottom-color: #e53e3e;
+      color: #e53e3e;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LifeDrop User Role Updater</h1>
+
+    <!-- Authentication Section -->
+    <div id="authSection">
+      <div id="userInfo" style="display: none;" class="auth-status">
+        <span>Logged in as:</span> 
+        <span id="userEmail" class="user-email"></span>
+        <button id="logoutBtn" style="margin-left: auto; width: auto;">Logout</button>
+      </div>
+
+      <div id="loginForm">
+        <div class="card">
+          <h2>Login</h2>
+          <div class="form-group">
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" placeholder="Your password">
+          </div>
+          <button id="loginBtn">Login</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Role Management Section (hidden until logged in) -->
+    <div id="roleManagementSection" style="display: none;">
+      <div class="tabs">
+        <div class="tab active" data-tab="manual">Manual Update</div>
+        <div class="tab" data-tab="predefined">Predefined Updates</div>
+      </div>
+
+      <div id="manualUpdateTab" class="tab-content">
+        <div class="form-group">
+          <label for="email">User Email:</label>
+          <input type="email" id="email" placeholder="user@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="role">Role:</label>
+          <select id="role">
+            <option value="user">User (Default)</option>
+            <option value="admin">Admin</option>
+            <option value="hospital">Hospital</option>
+          </select>
+        </div>
+        
+        <button id="updateRole">Update Role</button>
+      </div>
+
+      <div id="predefinedUpdatesTab" class="tab-content" style="display: none;">
+        <div class="card">
+          <h3>Admin Access</h3>
+          <p>Email: 23h51a05n9@cmrcet.ac.in</p>
+          <button id="updateAdmin">Set as Admin</button>
+        </div>
+        
+        <div class="card">
+          <h3>Hospital Access</h3>
+          <p>Email: kalluri112005@gmail.com</p>
+          <button id="updateHospital">Set as Hospital</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="log" id="log"></div>
+  </div>
+
+  <script>
+    // Firebase configuration - same as in the app
+    const firebaseConfig = {
+      apiKey: "AIzaSyB998t1YmgrihPARTuJURvZk7EXDWvoG2E",
+      authDomain: "blood-bank-356a1.firebaseapp.com",
+      projectId: "blood-bank-356a1",
+      storageBucket: "blood-bank-356a1.appspot.com",
+      messagingSenderId: "439887172797",
+      appId: "1:439887172797:web:31a43e7d03f2bee63153d4",
+      measurementId: "G-43GG7LPNBX"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Log function
+    function log(message, type = 'info') {
+      const logElement = document.getElementById('log');
+      const entry = document.createElement('p');
+      entry.textContent = message;
+      entry.className = type;
+      logElement.appendChild(entry);
+      logElement.scrollTop = logElement.scrollHeight;
+    }
+
+    // Authentication state observer
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in
+        log(`Logged in as ${user.email}`, 'success');
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userInfo').style.display = 'flex';
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('roleManagementSection').style.display = 'block';
+      } else {
+        // User is signed out
+        log('Not logged in. Please log in to continue.');
+        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('roleManagementSection').style.display = 'none';
+      }
+    });
+
+    // Login functionality
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!email || !password) {
+        log('Please enter both email and password', 'error');
+        return;
+      }
+      
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          log('Login successful', 'success');
+        })
+        .catch((error) => {
+          log(`Login failed: ${error.message}`, 'error');
+        });
+    });
+
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut()
+        .then(() => {
+          log('Logged out successfully');
+        })
+        .catch((error) => {
+          log(`Logout error: ${error.message}`, 'error');
+        });
+    });
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+        
+        // Hide all tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.style.display = 'none';
+        });
+        
+        // Show selected tab content
+        const tabName = this.getAttribute('data-tab');
+        if (tabName === 'manual') {
+          document.getElementById('manualUpdateTab').style.display = 'block';
+        } else if (tabName === 'predefined') {
+          document.getElementById('predefinedUpdatesTab').style.display = 'block';
+        }
+      });
+    });
+
+    // Function to update user role
+    async function updateUserRole(email, role) {
+      log(`Attempting to update ${email} to role: ${role}...`);
+      
+      try {
+        // First get the user by email from authentication
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          log('You must be logged in to update roles', 'error');
+          return false;
+        }
+         
+        // Check if we have email stored in 'users' collection
+        const userResults = await db.collection('users').where("email", "==", email).get();
+        let userId = null;
+        
+        if (!userResults.empty) {
+          // We found the user by email query
+          userId = userResults.docs[0].id;
+          log(`Found user with ID: ${userId}`, 'success');
+        } else {
+          // Try direct email as ID approach
+          log(`User not found by email query, trying direct approach...`);
+          
+          // Normalize email for Firebase paths (replace . and @ with _ or another safe character)
+          userId = email.replace(/[.@]/g, '_');
+        }
+        
+        // Update the user role in 'userRoles' collection
+        await db.collection('userRoles').doc(userId).set({ role });
+        log(`Successfully updated role for ${email} to ${role}`, 'success');
+        return true;
+      } catch (error) {
+        log(`Error updating role: ${error.message}`, 'error');
+        return false;
+      }
+    }
+
+    // Event listeners for role updates
+    document.getElementById('updateRole').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const role = document.getElementById('role').value;
+      
+      if (!email) {
+        log('Please enter an email address', 'error');
+        return;
+      }
+      
+      await updateUserRole(email, role);
+    });
+
+    document.getElementById('updateAdmin').addEventListener('click', async () => {
+      await updateUserRole('23h51a05n9@cmrcet.ac.in', 'admin');
+    });
+
+    document.getElementById('updateHospital').addEventListener('click', async () => {
+      await updateUserRole('kalluri112005@gmail.com', 'hospital');
+    });
+
+    // Log initial status
+    log('User Role Updater initialized.');
+  </script>
+</body>
+</html> 

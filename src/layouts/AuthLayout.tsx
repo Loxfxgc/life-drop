@@ -4,6 +4,13 @@ import Notification from '../components/common/Notification';
 import { useNotification } from '../hooks/useNotification';
 import { ROUTES } from '../constants/routes';
 
+// Define Notification type (matching the one from the context)
+interface NotificationType {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+}
+
 const AuthLayout: React.FC = () => {
   const { notifications } = useNotification();
   
@@ -23,7 +30,7 @@ const AuthLayout: React.FC = () => {
       </div>
 
       <div className="fixed top-4 right-4 z-50 flex flex-col items-end space-y-2 w-full max-w-md">
-        {notifications.map(notification => (
+        {notifications.map((notification: NotificationType) => (
           <Notification 
             key={notification.id}
             message={notification.message}

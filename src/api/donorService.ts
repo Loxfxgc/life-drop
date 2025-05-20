@@ -171,14 +171,15 @@ export const donorService = {
   // Get donation history for a donor
   getDonorHistory: async (userId: string): Promise<DonationHistory[]> => {
     try {
+      // Remove the sorting by date to avoid requiring a composite index
       const q = query(
         donationsCollection, 
-        where("userId", "==", userId),
-        orderBy("date", "desc")
+        where("userId", "==", userId)
       );
       
       const querySnapshot = await getDocs(q);
       
+      // Map and convert dates, then sort in memory
       return querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -187,6 +188,9 @@ export const donorService = {
           // Convert Firestore timestamp to JavaScript Date
           date: data.date?.toDate() || new Date(),
         } as DonationHistory;
+      }).sort((a, b) => {
+        // Sort by date in descending order (newest first)
+        return b.date.getTime() - a.date.getTime();
       });
     } catch (error) {
       console.error("Error getting donor history:", error);

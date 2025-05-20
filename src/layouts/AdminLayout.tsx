@@ -3,8 +3,8 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import Notification from '../components/common/Notification';
-import { useNotification } from '../hooks/useNotification';
-import { useAuth } from '../hooks/useAuth';
+import { useNotification } from '../contexts/NotificationContext';
+import { useAuth } from '../contexts/AuthContext';
 import { ROUTES } from '../constants/routes';
 
 const AdminLayout: React.FC = () => {
@@ -50,10 +50,17 @@ const AdminLayout: React.FC = () => {
           } fixed inset-y-0 left-0 z-30 pt-16 flex flex-col`}
         >
           <div className="flex-grow overflow-y-auto">
-            <div className="px-4 py-4">
+            <div className="px-4 py-4 flex items-center">
+              {isSidebarOpen && (
+                <img
+                  className="h-8 w-auto mr-2"
+                  src="/assets/images/lifedrop-logo.png"
+                  alt="LifeDrop Logo"
+                />
+              )}
               <button
                 onClick={toggleSidebar}
-                className="w-full flex items-center justify-center md:justify-end"
+                className={`${isSidebarOpen ? 'ml-auto' : 'w-full'} flex items-center justify-center`}
               >
                 <svg
                   className={`w-6 h-6 transition-transform ${

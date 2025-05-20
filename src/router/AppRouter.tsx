@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import AuthLayout from '../layouts/AuthLayout';
+import HospitalLayout from '../layouts/HospitalLayout';
 
 // Pages
 import HomePage from '../pages/HomePage';
@@ -20,8 +21,13 @@ import AdminPage from '../pages/AdminPage';
 import ProfilePage from '../pages/ProfilePage';
 import FAQPage from '../pages/FAQPage';
 import ContactPage from '../pages/ContactPage';
+import HospitalRegistrationPage from '../pages/HospitalRegistrationPage';
+import HospitalDashboardPage from '../pages/HospitalDashboardPage';
+import RecordDonationPage from '../pages/RecordDonationPage';
+import HospitalRequestsPage from '../pages/HospitalRequestsPage';
+import HospitalManageInventoryPage from '../pages/HospitalManageInventoryPage';
 
-// Create placeholder component for admin sections
+// Create placeholder component for sections
 import PlaceholderPage from '../components/common/PlaceholderPage';
 
 const AppRouter: React.FC = () => {
@@ -45,6 +51,7 @@ const AppRouter: React.FC = () => {
       {/* Auth Routes */}
       <Route element={<AuthLayout />}>
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/hospital/register" element={<HospitalRegistrationPage />} />
       </Route>
       
       {/* Protected Routes - User */}
@@ -61,6 +68,22 @@ const AppRouter: React.FC = () => {
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/request" element={<RequestPage />} />
         <Route path="/appointment" element={<AppointmentPage />} />
+      </Route>
+      
+      {/* Protected Routes - Hospital */}
+      <Route 
+        element={
+          <RequireHospital>
+            <HospitalLayout />
+          </RequireHospital>
+        }
+      >
+        <Route path="/hospital/dashboard" element={<HospitalDashboardPage />} />
+        <Route path="/hospital/record-donation" element={<RecordDonationPage />} />
+        <Route path="/hospital/requests" element={<HospitalRequestsPage />} />
+        <Route path="/hospital/inventory" element={<HospitalManageInventoryPage />} />
+        <Route path="/hospital/inventory/manage" element={<HospitalManageInventoryPage />} />
+        <Route path="/hospital/events" element={<PlaceholderPage title="Blood Donation Events" />} />
       </Route>
       
       {/* Protected Routes - Admin */}
@@ -101,6 +124,14 @@ const RequireAuth: React.FC<ProtectedRouteProps> = ({ children }) => {
 const RequireAdmin: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user } = useAuth();
   if (!user || user.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+  return <>{children}</>;
+};
+
+const RequireHospital: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { user } = useAuth();
+  if (!user || user.role !== 'hospital') {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
